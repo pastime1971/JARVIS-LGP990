@@ -136,12 +136,14 @@ static DEFINE_PCI_DEVICE_TABLE(affected_device) = {
 static void __devinit tweak_runavg_range(struct pci_dev *pdev)
 {
 	u32 val;
+	const struct pci_device_id affected_device = {
+		PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_15H_NB_F4) };
 
 	/*
 	 * let this quirk apply only to the current version of the
 	 * northbridge, since future versions may change the behavior
 	 */
-	if (!pci_match_id(affected_device, pdev))
+	if (!pci_match_id(&affected_device, pdev))
 		return;
 
 	pci_bus_read_config_dword(pdev->bus,
