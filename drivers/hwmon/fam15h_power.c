@@ -128,11 +128,6 @@ static bool __devinit fam15h_power_is_internal_node0(struct pci_dev *f4)
  * counter saturations resulting in bogus power readings.
  * We correct this value ourselves to cope with older BIOSes.
  */
-static DEFINE_PCI_DEVICE_TABLE(affected_device) = {
-	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_15H_NB_F4) },
-	{ 0 }
-};
-
 static void __devinit tweak_runavg_range(struct pci_dev *pdev)
 {
 	u32 val;
