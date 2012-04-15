@@ -25,6 +25,13 @@ config USB_ARCH_HAS_HCD
 	default y if SUPERH				# r8a66597-hcd
 	default PCI
 
+config UMS_NLUNS
+	tristate "UMS EXTERNAL AND INTERNAL SDCARD support"
+	depends on MACH_STAR
+	default y
+	help
+		Make nLUN to "two" so that both storage mount as UMS
+
 # many non-PCI SOC chips embed OHCI
 config USB_ARCH_HAS_OHCI
 	boolean
