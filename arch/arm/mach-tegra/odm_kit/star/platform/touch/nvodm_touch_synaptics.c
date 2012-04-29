@@ -496,6 +496,9 @@ static NvBool Synaptics_GetSamples (Synaptics_TouchDevice* hTouch, NvOdmTouchCoo
 				//  2011/06/22 end    
 				// the above was a work-around of incorrect behavior in LatinIME where far left key didn't register
 				// we don't have this issue on ICS any more
+				if((LGE_TOUCH_RESOLUTION_Y <= curr_ts_data.Y_position[i]) && (curr_ts_data.Y_position[i] < TOUCH_LCD_ACTIVE_AREA_Y))
+					curr_ts_data.Y_position[i] = LGE_TOUCH_RESOLUTION_Y - 1;
+
 				if ((((ts_reg_data.fingers_data[i][3] & 0xf0) >> 4) - (ts_reg_data.fingers_data[i][3] & 0x0f)) > 0)
 					curr_ts_data.width[i] = (ts_reg_data.fingers_data[i][3] & 0xf0) >> 4;
 				else
