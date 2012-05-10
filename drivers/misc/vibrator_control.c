@@ -54,7 +54,7 @@ static ssize_t vibratorcontrol_vibstrength_write(struct device * dev, struct dev
 
 static ssize_t vibratorcontrol_version(struct device * dev, struct device_attribute * attr, char * buf)
 {
-    return sprintf(buf, "%u\n", FSYNCCONTROL_VERSION);
+    return sprintf(buf, "%u\n", VIBRATORCONTROL_VERSION);
 }
 
 static DEVICE_ATTR(vibrator_strength, S_IRUGO | S_IWUGO, vibratorcontrol_vibstrength_read, vibratorcontrol_vibstrength_write);
