@@ -55,7 +55,7 @@
 
 #define KTHREAD_IRQ_PRIO (MAX_RT_PRIO>>1)
 
-#define DEFAULT_CPU_NOMINAL_MV (1200)
+#define DEFAULT_CPU_NOMINAL_MV (1300)
 
 #define define_ro_attr(_name)            \
     static ssize_t show_##_name(struct cpufreq_policy *policy,  \

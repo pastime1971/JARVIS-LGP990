@@ -43,8 +43,7 @@
 #include <linux/kernel.h>
 
 #define MAX_OVERCLOCK (1408000)
-NvRmCpuShmoo fake_CpuShmoo; // Pointer to fake CpuShmoo values
-NvU32 FakeShmooVmaxIndex = 7; // Max voltage index in the voltage tab (size-1)
+NvU32 ClockTableLength = 8; // Max voltage index in the voltage tab (size-1)
 
 NvU32 FakeShmooVoltages[] = {
     775,
@@ -124,6 +123,7 @@ static NvRmChipFlavor s_ChipFlavor;
 static NvRmSocShmoo s_SocShmoo;
 static NvRmCpuShmoo s_CpuShmoo;
 static void* s_pShmooData = NULL;
+
 NvRmCpuShmoo *ExposedCpuShmoo = &s_CpuShmoo;
 
 static NvError
@@ -412,12 +412,12 @@ NvRmPrivModuleVscaleGetMV(
     // Use CPU specific voltage ladder if SoC has dedicated CPU rail
     if (s_ChipFlavor.pCpuShmoo && (Module == NvRmModuleID_Cpu))
     {
-        for (i = 0; i < fake_CpuShmoo.ShmooVmaxIndex; i++)
+        for (i = 0; i < s_ChipFlavor.pCpuShmoo->ShmooVmaxIndex; i++)
         {
             if (FreqKHz <= pScale[i])
                 break;
         }
-        return fake_CpuShmoo.ShmooVoltages[i];
+        return s_ChipFlavor.pCpuShmoo->ShmooVoltages[i];
     }
     // Use common ladder for all other modules or CPU on core rail
     for (i = 0; i < s_ChipFlavor.pSocShmoo->ShmooVmaxIndex; i++)
@@ -439,7 +439,7 @@ NvRmPrivModuleVscaleGetMaxKHzList(
 
     // Use CPU specific voltage ladder if SoC has dedicated CPU rail
     if (s_ChipFlavor.pCpuShmoo && (Module == NvRmModuleID_Cpu))
-        *pListSize = fake_CpuShmoo.ShmooVmaxIndex + 1;
+        *pListSize = s_ChipFlavor.pCpuShmoo->ShmooVmaxIndex + 1;
     else
         *pListSize = s_ChipFlavor.pSocShmoo->ShmooVmaxIndex + 1;
 
@@ -922,12 +922,22 @@ static NvError NvRmBootArgChipShmooGet(
         // Shmoo data for dedicated CPU domain
         pChipFlavor->pCpuShmoo = &s_CpuShmoo;
 
+        offset = BootArgSh.CpuShmooVoltagesListOffset;
+        size = BootArgSh.CpuShmooVoltagesListSize;
+        NV_ASSERT (offset + size <= TotalSize);
         s_CpuShmoo.ShmooVoltages = &FakeShmooVoltages[0];
-        s_CpuShmoo.ShmooVmaxIndex = FakeShmooVmaxIndex;
+        size /= sizeof(*s_CpuShmoo.ShmooVoltages);
+        NV_ASSERT((size * sizeof(*s_CpuShmoo.ShmooVoltages) ==
+              BootArgSh.CpuShmooVoltagesListSize) && (size > 1));
+        s_CpuShmoo.ShmooVmaxIndex = ClockTableLength - 1;
+
+		printk(KERN_DEBUG "Shmoo: s_CpuShmoo.ShmooVmaxIndex = %d\n", s_CpuShmoo.ShmooVmaxIndex);
+
+        offset = BootArgSh.CpuScaledLimitsOffset;
+        size = BootArgSh.CpuScaledLimitsSize;
+        NV_ASSERT (offset + size <= TotalSize);
         s_CpuShmoo.pScaledCpuLimits = &FakepScaledCpuLimits;
-        fake_CpuShmoo.ShmooVoltages = &FakeShmooVoltages[0];
-        fake_CpuShmoo.ShmooVmaxIndex = FakeShmooVmaxIndex;
-        fake_CpuShmoo.pScaledCpuLimits = &FakepScaledCpuLimits;
+        NV_ASSERT(size == sizeof(*s_CpuShmoo.pScaledCpuLimits));
     }
     else
     {

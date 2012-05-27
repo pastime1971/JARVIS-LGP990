@@ -53,9 +53,6 @@
 #include "ap20/ap20rm_clocks.h"
 #include <linux/kernel.h>
 
-extern NvRmCpuShmoo fake_CpuShmoo; // Pointer to fake CpuShmoo
-NvRmDfs *fakeShmoo_Dfs; // Used to get temp from cpufreq
-
 /*****************************************************************************/
 
 // Initial DFS configuration
@@ -2065,7 +2062,6 @@ void NvRmPrivDfsResync(void)
 {
     NvRmDfsFrequencies DfsKHz;
     NvRmDfs* pDfs = &s_Dfs;
-    fakeShmoo_Dfs = &s_Dfs; // Crappy way to get temp ?!
 
     DfsClockFreqGet(pDfs->hRm, &DfsKHz);
 
