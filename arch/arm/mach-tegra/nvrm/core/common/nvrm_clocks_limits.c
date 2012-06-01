@@ -42,18 +42,18 @@
 #include "ap15/project_relocation_table.h"
 #include <linux/kernel.h>
 
-#define MAX_OVERCLOCK (1408000)
+#define MAX_OVERCLOCK (1504000)
 NvU32 ClockTableLength = 8; // Max voltage index in the voltage tab (size-1)
 
 NvU32 FakeShmooVoltages[] = {
     775,
     800,
-    850,
     875,
-    950,
-    1050,
-    1150,
-    1250
+    975,
+    1075,
+    1175,
+    1275,
+    1325
 };
 
 NvRmScaledClkLimits FakepScaledCpuLimits = {
@@ -65,11 +65,11 @@ NvRmScaledClkLimits FakepScaledCpuLimits = {
     216000,
     456000,
     608000,
-    760000,
     816000,
     1000000,
     1216000,
-    1408000
+    1408000,
+    1504000
     }
 };
 
