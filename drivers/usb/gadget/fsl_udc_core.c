@@ -1578,7 +1578,7 @@ static void udc_test_mode(struct fsl_udc *udc, u32 test_mode)
 		}
 
 		/* prime the data phase */
-		if ((fsl_req_to_dtd(req) == 0))
+		if ((fsl_req_to_dtd(req, GFP_ATOMIC) == 0))
 			fsl_queue_td(ep, req);
 		else			/* no mem */
 			goto stall;
