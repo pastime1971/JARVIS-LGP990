@@ -268,7 +268,7 @@ extern "C"
  * mechanism.
  */
 #define NVRM_DTT_DEGREES_HIGH           (95L)
-#define NVRM_DTT_DEGREES_LOW            (65L)
+#define NVRM_DTT_DEGREES_LOW            (55L)
 #define NVRM_DTT_DEGREES_HYSTERESIS     (8L)
 
 #define NVRM_DTT_VOLTAGE_THROTTLE_MV    (NvRmVoltsMaximum)
