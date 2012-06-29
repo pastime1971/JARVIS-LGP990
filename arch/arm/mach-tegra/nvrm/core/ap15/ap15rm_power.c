@@ -256,7 +256,7 @@ PowerGroupPowerControl(
     if (Enable)
     {
         PowerGroupClockControl(hRmDeviceHandle, PowerGroup, NV_TRUE);
-        NvOsWaitUS(NVRM_RESET_DELAY);
+        NvOsSleepUS(NVRM_RESET_DELAY);
 
         // PCIE and VDE clamping masks are swapped relatively to
         // partition Ids (bug 602975)
@@ -493,7 +493,7 @@ void NvRmPrivIoPowerDetectStart(
             (hRmDeviceHandle->ChipId.Major == 0x01) &&
             (hRmDeviceHandle->ChipId.Minor == 0x01))
         {
-            NvOsWaitUS(NVRM_PWR_DET_DELAY_US);
+            NvOsSleepUS(NVRM_PWR_DET_DELAY_US);
             NV_REGW(hRmDeviceHandle,
                     NvRmModuleID_Pmif, 0, APBDEV_PMC_PWR_DET_LATCH_0, 1);
         }
@@ -640,7 +640,7 @@ void NvRmPrivCoreVoltageInit(NvRmDeviceHandle hRmDevice)
         NominalCpuMv = NV_MAX(NominalCpuMv, cap.MinMilliVolts);
         NvRmPmuSetVoltage(hRmDevice, CpuRailAddress, NominalCpuMv, NULL);
         if (CurrentCoreMv > NominalCoreMv)
-            NvOsWaitUS(NVRM_CPU_TO_CORE_DOWN_US); // delay if core to go down
+            NvOsSleepUS(NVRM_CPU_TO_CORE_DOWN_US); // delay if core to go down
     }
 
     // If core voltage is going down, update it after CPU voltage

@@ -793,7 +793,7 @@ NvRmPrivAp15Reset2D(NvRmDeviceHandle hRmDevice)
             (NV_DRF_NUM(CLK_RST_CONTROLLER, CLK_SOURCE_G2D, G2D_CLK_DIVISOR, 2) |
              NV_DRF_DEF(CLK_RST_CONTROLLER, CLK_SOURCE_G2D, G2D_CLK_SRC, PLLM_OUT0)));
     Ap15EnableModuleClock(hRmDevice, NvRmModuleID_2D, ModuleClockState_Enable);
-    NvOsWaitUS(NVRM_RESET_DELAY);
+    NvOsSleepUS(NVRM_RESET_DELAY);
 
     // Take 2D out of reset and disable 2D clock. Both VI and 2D clocks are
     // left disabled -it is up to the resepctive drivers to configure and enable
