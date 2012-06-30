@@ -256,7 +256,7 @@ PowerGroupPowerControl(
     if (Enable)
     {
         PowerGroupClockControl(hRmDeviceHandle, PowerGroup, NV_TRUE);
-        NvOsSleepUS(NVRM_RESET_DELAY);
+        NvOsWaitUS(NVRM_RESET_DELAY);
 
         // PCIE and VDE clamping masks are swapped relatively to
         // partition Ids (bug 602975)
@@ -493,7 +493,7 @@ void NvRmPrivIoPowerDetectStart(
             (hRmDeviceHandle->ChipId.Major == 0x01) &&
             (hRmDeviceHandle->ChipId.Minor == 0x01))
         {
-            NvOsSleepUS(NVRM_PWR_DET_DELAY_US);
+            NvOsWaitUS(NVRM_PWR_DET_DELAY_US);
             NV_REGW(hRmDeviceHandle,
                     NvRmModuleID_Pmif, 0, APBDEV_PMC_PWR_DET_LATCH_0, 1);
         }
