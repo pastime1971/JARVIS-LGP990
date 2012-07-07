@@ -42,18 +42,19 @@
 #include "ap15/project_relocation_table.h"
 #include <linux/kernel.h>
 
-#define MAX_OVERCLOCK (1504000)
+#define MAX_OVERCLOCK (1408000)
+NvRmCpuShmoo fake_CpuShmoo; // Pointer to fake CpuShmoo values
 NvU32 ClockTableLength = 8; // Max voltage index in the voltage tab (size-1)
 
 NvU32 FakeShmooVoltages[] = {
-    775,
+    750,
     800,
+    850,
     875,
-    975,
-    1075,
-    1175,
-    1275,
-    1325
+    950,
+    1000,
+    1100,
+    1200
 };
 
 NvRmScaledClkLimits FakepScaledCpuLimits = {
@@ -62,14 +63,14 @@ NvRmScaledClkLimits FakepScaledCpuLimits = {
     32, // FakepScaledCpuLimits.MinKHz
     // Clock table
     {
-    216000,
-    456000,
-    608000,
-    816000,
-    1000000,
+    389000,
+    503000,
+    655000,
+    760000,
+    950000,
+    1015000,
     1216000,
-    1408000,
-    1504000
+    1408000
     }
 };
 
@@ -259,8 +260,7 @@ NvRmPrivClockLimitsInit(NvRmDeviceHandle hRmDevice)
 
     // Set upper clock boundaries for devices on CPU bus (CPU, Mselect,
     // CMC) with combined Absolute/Scaled limits
-
-    CpuMaxKHz = MAX_OVERCLOCK;
+	CpuMaxKHz = MAX_OVERCLOCK;
     s_ClockRangeLimits[NvRmModuleID_Cpu].MaxKHz = CpuMaxKHz;
     if ((hRmDevice->ChipId.Id == 0x15) || (hRmDevice->ChipId.Id == 0x16))
     {
