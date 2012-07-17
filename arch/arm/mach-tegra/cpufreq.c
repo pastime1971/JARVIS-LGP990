@@ -38,6 +38,7 @@
 // 20100728  related deepsleep wakeup delay, (NVIDIA john moser) [END]
 #include <linux/reboot.h>
 #include <linux/delay.h>
+#include <linux/earlysuspend.h>
 
 #include <asm/system.h>
 #include <asm/smp_twd.h>
@@ -50,7 +51,7 @@
 #include <nvrm_power_private.h>
 #include "nvrm/core/common/nvrm_clocks_limits_private.h"
 #include "nvrm_diag.h"
-#include <linux/earlysuspend.h>
+#include "nvrm/core/common/nvrm_chipid.h"
 
 #define KTHREAD_IRQ_PRIO (MAX_RT_PRIO>>1)
 
@@ -93,6 +94,8 @@ static struct cpufreq_frequency_table freq_table_1500[] = {
 	{ 7, 1408000 },
 	{ 8, CPUFREQ_TABLE_END },
 };
+
+#define FT_SIZE ARRAY_SIZE(freq_table_1500)
 
 static struct cpufreq_frequency_table *freq_table;
 
@@ -265,8 +268,19 @@ static int tegra_cpufreq_dfsd(void *arg)
 
 static int tegra_verify_speed(struct cpufreq_policy *policy)
 {
-	cpufreq_verify_within_limits(policy, policy->cpuinfo.min_freq,
-		policy->cpuinfo.max_freq);
+	unsigned int max_freq, min_freq;
+	int ret;
+	
+	max_freq = policy->max;
+	min_freq = policy->min;
+	
+	cpufreq_verify_within_limits(policy,
+		freq_table_1500[0].frequency, freq_table_1500[FT_SIZE - 2].frequency);
+		
+	ret = 0;
+	if (max_freq != policy->max || min_freq != policy->min)
+		ret = 1;
+	
 	return 0;
 }
 
@@ -428,6 +442,15 @@ static int tegra_cpufreq_driver_init(struct cpufreq_policy *pol)
 
 	cpufreq_frequency_table_cpuinfo(pol, freq_table);
 	cpufreq_frequency_table_get_attr(freq_table, pol->cpu);
+
+	switch (NvRmPrivGetChipId(rm_cpufreq)->Id) {
+	case 0x20:
+		// cpu frequencies are synchronized
+		cpumask_copy(pol->cpus, cpu_possible_mask);
+		break;
+	default:
+		break;
+	}
 
 	return 0;
 }
